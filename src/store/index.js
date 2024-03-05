@@ -1,12 +1,12 @@
 // import { createStore } from 'redux';
 import { createSlice, configureStore } from '@reduxjs/toolkit';
 
-const initialState = { counter: 0, showCounter: true };
+const initialCounterState = { counter: 0, showCounter: true };
 
 // preparing slice of global state
 const counterSlice = createSlice({
   name: 'counter',
-  initialState: initialState,
+  initialState: initialCounterState,
   reducers: {
     increment(state) {
       state.counter++;
@@ -15,7 +15,7 @@ const counterSlice = createSlice({
       state.counter--;
     },
     increase(state, action) {
-      state.counter += action.value;
+      state.counter = state.counter + action.payload;
     },
     toggleCounter(state) {
       state.showCounter = !state.showCounter;
@@ -23,44 +23,39 @@ const counterSlice = createSlice({
   },
 });
 
-// create counter reducer
-// function counterReducer(state = initialState, action) {
-//   if (action.type === 'INCREMENT') {
-//     return {
-//       counter: state.counter + 1,
-//       showCounter: state.showCounter,
-//     };
-//   }
+//  auth inital state
+const initialAuthState = {
+  isAuthenticated: false,
+};
 
-//   if (action.type === 'DECREMENT') {
-//     return {
-//       counter: state.counter - 1,
-//       showCounter: state.showCounter,
-//     };
-//   }
-
-//   if (action.type === 'INCREASE') {
-//     return {
-//       counter: state.counter + action.value,
-//       showCounter: state.showCounter,
-//     };
-//   }
-
-//   if (action.type === 'TOGGLE_COUNTER') {
-//     return {
-//       counter: state.counter,
-//       showCounter: !state.showCounter,
-//     };
-//   }
-
-//   return state;
-// }
+// auth state slice
+const authSlice = createSlice({
+  name: 'auth',
+  initialState: initialAuthState,
+  reducers: {
+    login(state) {
+      state.isAuthenticated = true;
+    },
+    logout(state) {
+      state.isAuthenticated = false;
+    },
+  },
+});
 
 // store
 const store = configureStore({
-  reducer: counterSlice.reducer,
-} );
+  reducer: {
+    counter: counterSlice.reducer,
+    auth: authSlice.reducer,
+  },
+});
 
-// connect app to store - provide store to the app / index.js
+/*
+returns an action object of this shape
+{ type: 'some auto generated unique identifier',}
+*/
+// counterSlice.actions.toggleCounter();
 
+export const counterActions = counterSlice.actions;
+export const authActions = authSlice.actions;
 export default store;
